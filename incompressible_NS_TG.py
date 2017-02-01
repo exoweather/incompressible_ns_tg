@@ -33,7 +33,7 @@ if mesh is not None:
     mesh = mesh.split(',')
     mesh = [int(mesh[0]), int(mesh[1])]
 
-    
+initial_time = time.time() 
 # Parameters
 Lx, Ly, Lz = (1., 1., 1.)     
 #nx, ny, nz = (256,256,256)
@@ -131,3 +131,27 @@ finally:
     logger.info('Sim end time: {}'.format(solver.sim_time))
     logger.info('Run time: %.2f sec' %(end_time-start_time))
     logger.info('Run time: {} cpu-hr'.format((end_time-start_time)/60/60*domain.dist.comm_cart.size))
+
+    if (domain.distributor.rank==0):
+        N_TOTAL_CPU = domain.distributor.comm_cart.size
+        print('-' * 40)
+        total_time = end_time-initial_time
+        main_loop_time = end_time - start_time
+        startup_time = start_time-initial_time
+        n_steps = solver.iteration-1
+        print('  startup time:', startup_time)
+        print('main loop time:', main_loop_time)
+        print('    total time:', total_time)
+        print('    iterations:', solver.iteration)
+        print(' loop sec/iter:', main_loop_time/solver.iteration)
+        print('    average dt:', solver.sim_time / n_steps)
+        print("          N_cores, Nx, Nz, startup     main loop,   main loop/iter, main loop/iter/grid, n_cores*main loop/iter/grid")
+        print('scaling:',
+              ' {:d} {:d} {:d}'.format(N_TOTAL_CPU,nx,nz),
+              ' {:8.3g} {:8.3g} {:8.3g} {:8.3g} {:8.3g}'.format(startup_time,
+                                                                main_loop_time, 
+                                                                main_loop_time/n_steps, 
+                                                                main_loop_time/n_steps/(nx*nz), 
+                                                                N_TOTAL_CPU*main_loop_time/n_steps/(nx*nz)))
+        print('-' * 40)
+

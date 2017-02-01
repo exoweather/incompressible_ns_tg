@@ -138,10 +138,6 @@ def do_scaling_run(scaling_script, resolution, CPU_set, max_cores=None, min_core
             res_string = '{:d}x{:d}x{:d}'.format(sim_nx, sim_ny, sim_nz)
             ENV_N_TOTAL_CPU = np.prod(CPUs)
             print(CPUs)
-            if sim_nz >= 128:
-                if ENV_N_TOTAL_CPU <= 256:
-                    print("continuing around this low cpu case")
-                    continue
         else:
             res_string = '{:d}x{:d}'.format(sim_nx, sim_nz)
             ENV_N_TOTAL_CPU = CPUs
@@ -533,7 +529,7 @@ if __name__ == "__main__":
                 log2_min = np.ceil(log2_min)
 
                 print("min cores in log2 space {}".format(log2_min))
-                if n_z_2_min < log2_min:
+                if n_z_2_min > log2_min:
                     n_z_2_min = log2_min
                 min_cores = np.int(args['--min-cores'])
             else:
