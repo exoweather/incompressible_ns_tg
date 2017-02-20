@@ -35,6 +35,7 @@ Usage:
 Options:
      <z_resolution>        set Z resolution in chebyshev direction; X and Y resolution is same.
     --label=<label>        Label for output file
+    --niter=<niter>        Number of iterations to run for [default: 100]
     --verbose              Print verbose output at end of each run (stdout and stderr)
 
     --3D                   Run 3D script with 2D mesh domain decomposition
@@ -75,7 +76,8 @@ def num(s):
         return float(s)
 
 
-def do_scaling_run(scaling_script, resolution, CPU_set, max_cores=None, min_cores=None, 
+def do_scaling_run(scaling_script, resolution, CPU_set, max_cores=None, min_cores=None,
+                   niter=None, 
                    test_type='exhaustive', verbose=None, label=None, dim=2, 
                    OpenMPI=None, MPISGI=None, IntelMPI=None):
     if OpenMPI is None and IntelMPI is None and MPISGI is None:
@@ -171,6 +173,10 @@ def do_scaling_run(scaling_script, resolution, CPU_set, max_cores=None, min_core
         else:
             print(" pencils/core: {:g} ({:g}) and {:g} ({:g})".format(1/2*sim_nx/ENV_N_TOTAL_CPU, 3/2*sim_nx/ENV_N_TOTAL_CPU,
                                                                           sim_nz/ENV_N_TOTAL_CPU, 3/2*sim_nz/ENV_N_TOTAL_CPU))
+
+        if niter is not None:
+            commands += ["--niter={:d}".format(niter)]
+
         print("command: "+" ".join(commands))
         proc = subprocess.run(commands, 
                               env=test_env,
@@ -546,9 +552,9 @@ if __name__ == "__main__":
             CPU_set = [512, 256, 128, 64]
             resolution = [2048, 1024]
 
-        print(args['--OpenMPI'])
         start_time = time.time()
-        data_set = do_scaling_run(args['<scaling_script>'], resolution, CPU_set, 
+        data_set = do_scaling_run(args['<scaling_script>'], resolution, CPU_set,
+                                  niter=int(float(args['--niter'])),
                                   max_cores=max_cores, min_cores=min_cores,
                                   verbose=args['--verbose'], label=args['--label'], dim=dim,
                                   OpenMPI=args['--OpenMPI'], MPISGI=args['--MPISGI'], IntelMPI=args['--IntelMPI'])

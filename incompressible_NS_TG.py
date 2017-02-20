@@ -12,6 +12,7 @@ Options:
     --nz=<nz>                 Chebyshev resolution [default: 128]
     --nx=<nx>                 Fourier resolution [default: 128]
     --ny=<ny>                 Fourier resolution [default: 128]
+    --niter=<niter>           Iterations to run scaling test for (+1 automatically added to account for startup) [default: 100]
     --IO                      Do analysis IO
     
 """
@@ -28,6 +29,8 @@ from dedalus.extras import flow_tools
 import logging
 logger = logging.getLogger(__name__)
 
+niter = int(float(args['--niter']))+1
+
 mesh = args['--mesh']
 if mesh is not None:
     mesh = mesh.split(',')
@@ -36,7 +39,6 @@ if mesh is not None:
 initial_time = time.time() 
 # Parameters
 Lx, Ly, Lz = (1., 1., 1.)     
-#nx, ny, nz = (256,256,256)
 nx, ny, nz = (int(args['--nx']),int(args['--ny']),int(args['--nz'])) # grid resolution is 3/2 higher
 
 Reynolds = 1
@@ -91,7 +93,7 @@ dt = 0.125
 # Integration parameters
 solver.stop_sim_time = 25
 solver.stop_wall_time = 30 * 60.
-solver.stop_iteration = 200+1 #np.inf
+solver.stop_iteration = niter
 
 if args['--IO']:
     # Analysis
