@@ -27,7 +27,7 @@ python3 scaling.py run incompressible_NS_TG.py --3D 128 --min-cores=128 --max-co
 ```
 
 The following block of code, run on NASA/Pleiades Broadwell nodes (28
-cores/node) using an MPI-SGI stack,
+cores/node) using an MPI-SGI stack, recreates the scaling plot below:
 ```
 #!bash
 python3 scaling.py run incompressible_NS_TG.py --3D 128 --min-cores=16 --max-cores=2048 --MPISGI --niter=10
@@ -36,8 +36,7 @@ python3 scaling.py run incompressible_NS_TG.py --3D 512 --min-cores=256 --max-co
 
 python3 scaling.py plot scaling_data_512x512x512.db scaling_data_256x256x256.db scaling_data_128x128x128.db 
 ```
-recreates this scaling plot:
-
+![pleiades_scaling.png](https://bitbucket.org/repo/4xKjkG/images/1406508905-pleiades_scaling.png)
 
 Ideal scaling is indicated by dashed black lines, extrapolated from
 the lowest core count case in all cases.  At each core count, a cloud
@@ -46,4 +45,3 @@ configurations.  Generally, the configuration of the processor mesh
 has little impact on overall performance.
 
 Contact the exoweather team for more details.
-
