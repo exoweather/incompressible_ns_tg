@@ -11,6 +11,14 @@ Once [Dedalus](http://dedalus-project.org/) is installed and activated, do the f
 #!bash
 mpiexec_mpt -n 256 python3 incompressible_NS_TG.py --mesh=16,16
 ```
+To obtain sparsity plots of the implicit matrices, use the `--verbose`
+keyword: 
+```
+#!bash
+python3 incompressible_NS_TG.py --verbose --niter=2 --nx=4 --ny=4 --nz=128
+```
+Here we've run a reduced horizontal resolution case so that it can be
+readily completed by a single core.
 
 For scaling tests on NASA/Pleiades:
 ```
